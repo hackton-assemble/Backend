@@ -2,15 +2,20 @@ package assemble.eolmangyo.user.application.service;
 
 
 import assemble.eolmangyo.global.common.entity.CustomUserDetails;
+import assemble.eolmangyo.global.common.exception.BaseException;
+import assemble.eolmangyo.global.common.response.BaseResponseStatus;
 import assemble.eolmangyo.user.application.repository.UserRepository;
 import assemble.eolmangyo.user.application.util.JwtTokenProvider;
 import assemble.eolmangyo.user.application.util.UuidGenerator;
 import assemble.eolmangyo.user.domain.Users;
 import assemble.eolmangyo.user.domain.dto.LoginIdDuplicateCheckOutDto;
+import assemble.eolmangyo.user.domain.dto.SignInOutDto;
 import assemble.eolmangyo.user.domain.dto.SignUpInDto;
 import assemble.eolmangyo.user.domain.dto.SignUpOutDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +30,7 @@ public class AuthServiceImpl {
 	private final UuidGenerator uuidGenerator;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
+	private final AuthenticationManager authenticationManager;
 
 
 	/**
@@ -61,6 +67,17 @@ public class AuthServiceImpl {
 	}
 
 	// 3. 로그인
+	public SignInOutDto signIn(String loginId, String loginPassword) {
+		// 유저 조회
+		Users users = userRepository.findByLoginId(loginId)
+			.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_USER));
+		// 유저 인증
+		this.authenticate(users, loginPassword);
+		// 토큰 발급
+		return new SignInOutDto(createToken(users));
+	}
+
+
 
 	/**
 	 * private
@@ -71,5 +88,18 @@ public class AuthServiceImpl {
 		CustomUserDetails customUserDetails = new CustomUserDetails(users);
 		return jwtTokenProvider.generateToken(customUserDetails);
 	}
+
+	// 유저 인증
+	private void authenticate(Users users, String loginPassword) {
+		CustomUserDetails customUserDetails = new CustomUserDetails(users);
+		authenticationManager.authenticate(
+			new UsernamePasswordAuthenticationToken(
+			customUserDetails.getUserUuid(),
+			loginPassword)
+		);
+	}
+
+
+
 
 }

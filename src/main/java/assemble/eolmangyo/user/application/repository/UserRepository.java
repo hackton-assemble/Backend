@@ -25,4 +25,7 @@ public interface UserRepository {
 	// 3. userUuid로 Users 조회
 	Optional<Users> findByUserUuid(UUID userUuid);
 
+	// 4. 로그인 id로 Users 조회
+	Optional<Users> findByLoginId(String loginId);
+
 }
