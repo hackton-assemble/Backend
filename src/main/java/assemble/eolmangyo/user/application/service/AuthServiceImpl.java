@@ -55,7 +55,7 @@ public class AuthServiceImpl {
 	}
 
 	// 2. 로그인 아이디 중복 확인
-	public LoginIdDuplicateCheckOutDto existsByLoginId(String loginId) {
+	public LoginIdDuplicateCheckOutDto loginIdDuplicateCheck(String loginId) {
 		boolean isDuplicated = userRepository.existsByLoginId(loginId);
 		return new LoginIdDuplicateCheckOutDto(isDuplicated);
 	}
@@ -71,6 +71,5 @@ public class AuthServiceImpl {
 		CustomUserDetails customUserDetails = new CustomUserDetails(users);
 		return jwtTokenProvider.generateToken(customUserDetails);
 	}
-
 
 }

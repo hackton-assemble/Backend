@@ -3,8 +3,10 @@ package assemble.eolmangyo.user.api.controller;
 
 import assemble.eolmangyo.global.common.response.BaseResponse;
 import assemble.eolmangyo.user.api.request.SignUpRequestDto;
+import assemble.eolmangyo.user.api.response.LoginIdDuplicateCheckResponseDto;
 import assemble.eolmangyo.user.api.response.SignUpResponseDto;
 import assemble.eolmangyo.user.application.service.AuthServiceImpl;
+import assemble.eolmangyo.user.domain.dto.LoginIdDuplicateCheckOutDto;
 import assemble.eolmangyo.user.domain.dto.SignUpInDto;
 import assemble.eolmangyo.user.domain.dto.SignUpOutDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,6 +45,14 @@ public class AuthController {
 		return new BaseResponse<>(signUpResponseDto);
 	}
 
+	// 2. 아이디 중복 확인
+	@GetMapping("/duplicate-check/{loginId}")
+	@Operation(summary = "아이디 중복 확인", description = "아이디 중복 확인", tags = { "User Sign" })
+	public BaseResponse<LoginIdDuplicateCheckResponseDto> duplicateCheck(@PathVariable String loginId) {
+		LoginIdDuplicateCheckOutDto outDto = authService.loginIdDuplicateCheck(loginId);
+		LoginIdDuplicateCheckResponseDto responseDto = modelMapper.map(outDto, LoginIdDuplicateCheckResponseDto.class);
+		return new BaseResponse<>(responseDto);
+	}
 
 
 
