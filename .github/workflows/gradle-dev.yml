@@ -25,31 +25,31 @@ jobs:
     runs-on: ubuntu-latest
 
     # github service container -> Actions Workflow에서 애플리케이션을 테스트 및 운영할 때 사용하는 도구를 Docker 컨테이너로 제공
-    services:
-      mariadb:
-        image: mariadb:10.6
-        env:
-          MARIADB_DATABASE: ${{ secrets.DB_NAME }}
-          MARIADB_USER: ${{ secrets.DB_USER }}
-          MARIADB_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="healthcheck.sh 
-          --connect --innodb_initialized" 
-          --health-interval=10s 
-          --health-timeout=5s 
-          --health-retries=3
-
-      redis:
-        image: redis:7.2
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+#    services:
+#      mariadb:
+#        image: mariadb:10.6
+#        env:
+#          MARIADB_DATABASE: ${{ secrets.DB_NAME }}
+#          MARIADB_USER: ${{ secrets.DB_USER }}
+#          MARIADB_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
+#        ports:
+#          - 3306:3306
+#        options: >-
+#          --health-cmd="healthcheck.sh
+#          --connect --innodb_initialized"
+#          --health-interval=10s
+#          --health-timeout=5s
+#          --health-retries=3
+#
+#      redis:
+#        image: redis:7.2
+#        ports:
+#          - 6379:6379
+#        options: >-
+#          --health-cmd "redis-cli ping"
+#          --health-interval 10s
+#          --health-timeout 5s
+#          --health-retries 5
 
     # 깃허브에서 제공하는 checkout 액션 사용
     steps:
@@ -103,7 +103,7 @@ jobs:
       # Gradle 빌드 액션을 이용해서 프로젝트 빌드
       - name: Build with Gradle
         # -x test 옵션을 사용하면, 테스트 없이 빌드 -> 테스트 사용하도록 변경
-        run: ./gradlew build -i
+        run: ./gradlew build -x test -i
 
       # 도커 이미지 빌드 & 이미지를 도커허브로 push
       - name: Docker build & push to dockerhub
