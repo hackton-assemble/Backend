@@ -2,7 +2,6 @@ package assemble.eolmangyo.user.api.controller;
 
 
 import assemble.eolmangyo.global.common.response.BaseResponse;
-import assemble.eolmangyo.global.config.modelmapper.ModelMapperConfig;
 import assemble.eolmangyo.user.api.request.SignUpRequestDto;
 import assemble.eolmangyo.user.api.response.SignUpResponseDto;
 import assemble.eolmangyo.user.application.service.AuthServiceImpl;
@@ -12,10 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
@@ -48,5 +44,12 @@ public class AuthController {
 	}
 
 
+
+
+	// health check
+	@GetMapping("health-check")
+	public String healthCheck() {
+		return "health-check. OK";
+	}
 
 }

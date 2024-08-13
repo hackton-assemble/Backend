@@ -14,8 +14,6 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 
 
 @Configuration
@@ -42,64 +40,6 @@ public class SecurityConfig {
 		"/v3/api-docs/**",      // 스웨거
 		"/api-docs/**"          // 스웨거
 	};
-	private static final String[] authUrl = new String[] {
-		"/api/v1/user/auth/signup",         // 회원가입
-		"/api/v1/user/auth/signin",         // 로그인
-		"/api/v1/user/auth/signout",        // 로그아웃
-		"/api/v1/user/auth/refresh",             // 토큰 재발급
-		"/api/v1/user/auth/nickname-duplicate",  // 닉네임 중복 확인
-		"/api/v1/user/auth/signup/social",       // 소셜 회원가입
-		"/api/v1/user/auth/signin/social",       // 소셜 로그인
-		"/api/v1/user/auth/social-link",         // 소셜 계정 연동
-		"/api/v1/user/auth/email",               // 인증 이메일 전송
-		"/api/v1/user/auth/verify/email",        // 이메일 인증 코드 확인
-		"/api/v1/user/auth/email-duplicate",     // 이메일 중복 확인
-		"/api/v1/user/auth/restore",            // 회원 복구
-	};
-	private static final String[] usersUrl = new String[] {
-		"/api/v1/user/shorts-profile/{userUuid:" + REGEX_UUID + "}",   // 쇼츠의 유저 정보 조회
-		"/api/v1/user/simple-profile/{userUuid:" + REGEX_UUID + "}",   // uuid로 유저 간단 정보 조회
-		"/api/v1/user/password/reset",         // 유저 비밀번호 재설정
-		"/api/v1/user/search",                      // 검색어로 유저 조회
-	};
-	private static final RequestMatcher[] shortsUrl = new RequestMatcher[] {
-		new AntPathRequestMatcher("/api/v1/shorts/{userShortsId:" + REGEX_INT + "}", GET),      // 특정 shorts 조회
-		new AntPathRequestMatcher("/api/v1/shorts/**/writer", GET), // shorts 작성자 조회
-		new AntPathRequestMatcher("/api/v1/shorts/count/{userUuid:" + REGEX_UUID + "}", GET),      // 유저가 작성한 글 수 조회
-	};
-	private static final String[] feedUrl = new String[] {
-		"/api/v1/shorts/main-feed/non-user/recommend",  // 비회원 추천 메인피드 조회
-		"/api/v1/shorts/user-feed/{userUuid:" + REGEX_UUID + "}",          // 유저 피드 조회
-		"/api/v1/shorts/search",                        // 게시글 검색
-		"/api/v1/shorts/main-feed/random",                // 랜덤 메인피드 조회
-	};
-	private static final RequestMatcher[] musicUrl = new RequestMatcher[] {
-		new AntPathRequestMatcher("/api/v1/shorts/music", GET),      // 음악 목록 조회
-	};
-	private static final RequestMatcher[] commentUrl = new RequestMatcher[] {
-		new AntPathRequestMatcher("/api/v1/comment", GET),                  // 댓글 조회
-		new AntPathRequestMatcher("/api/v1/comment/re-comment", GET),       // 대댓글 조회
-		new AntPathRequestMatcher("/api/v1/comment/like/{commentDetailId:" + REGEX_INT + "}", GET),       // 댓글 좋아요 조회
-		new AntPathRequestMatcher("/api/v1/comment/count/{userShortsId:" + REGEX_INT + "}", GET),         // 댓글 수 조회
-		new AntPathRequestMatcher("/api/v1/comment/re-comment/count/{commentId:" + REGEX_INT + "}", GET)  // 대댓글 수 조회
-	};
-	private static final RequestMatcher[] interestUrl = new RequestMatcher[] {
-		new AntPathRequestMatcher("/api/v1/interest", GET),        // 관심사 리스트 조회
-	};
-	private static final String[] petUrl = new String[] {
-		"/api/v1/pet/category/main",    // 펫 메인카테고리 리스트 조회
-	};
-	private static final String[] followUrl = new String[] {
-		"/api/v1/follow/{userUuid:" + REGEX_UUID + "}/following/count",    // 팔로잉 수 조회
-		"/api/v1/follow/{userUuid:" + REGEX_UUID + "}/follower/count",     // 팔로워 수 조회
-	};
-	private static final String[] privacyUrl = new String[] {
-		"/api/v1/user/privacy-setting/name-disclosure/{userUuid:" + REGEX_UUID + "}",    // 실명 공개 여부 조회
-	};
-	private static final String[] subscribeUrl = new String[] {
-	};
-	private static final String[] notificationUrl = new String[] {
-	};
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final AuthenticationProvider authenticationProvider;
@@ -124,21 +64,9 @@ public class SecurityConfig {
 				.requestMatchers(org.springframework.web.cors.CorsUtils::isPreFlightRequest)
 				.permitAll()
 				// 로그인 없이 허용할 url
-				.requestMatchers(feedUrl).permitAll()
-				.requestMatchers(musicUrl).permitAll()
-				.requestMatchers(privacyUrl).permitAll()
-				.requestMatchers(authUrl).permitAll()
-				.requestMatchers(commonUrl).permitAll() // 공통 url
-				.requestMatchers(usersUrl).permitAll()  // users 도메인
-				.requestMatchers(shortsUrl).permitAll() // shorts 도메인
-				.requestMatchers(commentUrl).permitAll() // comment 도메인
-				.requestMatchers(interestUrl).permitAll() // interest 도메인
-				.requestMatchers(petUrl).permitAll() // pet 도메인
-				.requestMatchers(followUrl).permitAll() // follow 도메인
-				.requestMatchers(subscribeUrl).permitAll() // subscribe 도메인
-				.requestMatchers(notificationUrl).permitAll() // notification 도메인
+				.anyRequest().permitAll())
 				// 이외의 url은 허용하지 않음
-				.anyRequest().authenticated())
+//				.anyRequest().authenticated())
 			// 폼 로그인 사용 안함
 			.formLogin(AbstractHttpConfigurer::disable)
 			// authenticationProvider 설정 : 입력된 정보와 db의 정보를 비교하여, 인증에 성공하면 Authentication 객체를 생성하여 리턴해줌
