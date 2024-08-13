@@ -57,7 +57,8 @@ public class AuthServiceImpl {
 		// 유저 저장
 		users = userRepository.save(users);
 		// 토큰 발급
-		return new SignUpOutDto(createToken(users));
+		String accessToken = createToken(users);
+		return new SignUpOutDto(accessToken, users.getUserUuid(), users.getUserNickname());
 	}
 
 	// 2. 로그인 아이디 중복 확인
@@ -74,7 +75,8 @@ public class AuthServiceImpl {
 		// 유저 인증
 		this.authenticate(users, loginPassword);
 		// 토큰 발급
-		return new SignInOutDto(createToken(users));
+		String accessToken = createToken(users);
+		return new SignInOutDto(accessToken, users.getUserUuid(), users.getUserNickname());
 	}
 
 
