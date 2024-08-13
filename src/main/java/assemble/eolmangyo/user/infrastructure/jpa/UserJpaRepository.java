@@ -14,6 +14,7 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 	 * UserJpaRepository
 	 * 1. 로그인 id로 존재 여부 조회
 	 * 2. userUuid로 UserEntity 조회
+	 * 3. 로그인 id로 UserEntity 조회
 	 */
 
 	// 1. 로그인 id로 존재 여부 조회
@@ -21,5 +22,8 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
 	// 2. userUuid로 UserEntity 조회
 	Optional<UserEntity> findByUserUuid(UUID userUuid);
+
+	// 3. 로그인 id로 UserEntity 조회
+	Optional<UserEntity> findByLoginId(String loginId);
 
 }
