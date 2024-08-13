@@ -1,6 +1,7 @@
 package assemble.eolmangyo.global.config.sercurity;
 
 
+import assemble.eolmangyo.user.application.util.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +26,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	// 필터 과정
-	private final JwtTokenProviderImpl jwtTokenProviderImpl;
+	private final JwtTokenProvider jwtTokenProvider;
 	private final UserDetailsService userDetailsService;
 
 
@@ -58,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		// 2. 유효성 검사 & JWT 토큰에서 사용자 email을 가져옴
 		jwt = authHeader.substring(7); // "Bearer " 제외
-		userUUID = jwtTokenProviderImpl.validateAndGetUserUuid(jwt);
+		userUUID = jwtTokenProvider.validateAndGetUserUuid(jwt);
 
 		// 3. 중복되지 않았다면 ContextHolder에 유저 정보를 담음 (여기선 userUuid가 담김)
 		if (SecurityContextHolder.getContext().getAuthentication() == null) {
