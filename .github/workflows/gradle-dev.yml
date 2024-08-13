@@ -129,6 +129,6 @@ jobs:
             sudo docker ps
             sudo docker stop eolmangyo-be || true
             sudo docker rm eolmangyo-be || true
-            sudo docker pull "${{ secrets.DOCKER_USERNAME }}"/untitled-develop:"${{ github.run_number }}"
+            sudo docker pull "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.DOCKER_REPO }}":"${{ github.run_number }}"
             sudo docker run -d --name eolmangyo-be -p "${{ secrets.DEVELOP_SERVICE_PORT }}":"${{ secrets.DEVELOP_SERVICE_PORT }}" --network root_assemble "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.DOCKER_REPO }}":"${{ github.run_number }}"
             sudo docker image prune -a -f
