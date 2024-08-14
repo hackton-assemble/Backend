@@ -31,7 +31,7 @@ public class AveragePriceAndQualityEntity extends BaseTimeEntity {
 	private Integer averagePrice;
 
 	// 평균 품질
-	@Column(name = "average_quality", nullable = false, columnDefinition = "DECIMAL(2, 1)")
+	@Column(name = "average_quality", nullable = false)
 	private Float averageQuality;
 
 	// 날짜
@@ -42,6 +42,7 @@ public class AveragePriceAndQualityEntity extends BaseTimeEntity {
 	 * AveragePriceAndQualityEntity
 	 * 1. fromDomain
 	 * 2. toDomain
+	 * 3. 평균값 업데이트
 	 */
 
 	// 1. fromDomain
@@ -65,5 +66,10 @@ public class AveragePriceAndQualityEntity extends BaseTimeEntity {
 			.build();
 	}
 
+	// 3. 평균값 업데이트
+	public void updateAveragePriceAndQuality(Integer averagePrice, Float averageQuality) {
+		this.averagePrice = averagePrice;
+		this.averageQuality = averageQuality;
+	}
 
 }

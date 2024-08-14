@@ -26,6 +26,9 @@ public class Review {
 	// 구매량
 	private Integer purchaseQuantity;
 
+	// 구매 가격
+	private Integer purchasePrice;
+
 	// 품질
 	private Integer quality;
 

@@ -2,7 +2,10 @@ package assemble.eolmangyo.user.api.facade;
 
 
 import assemble.eolmangyo.fruit.application.service.MarketFruitServiceImpl;
+import assemble.eolmangyo.fruit.domain.enums.FruitCountType;
+import assemble.eolmangyo.fruit.infrastructure.entity.AveragePriceAndQualityEntity;
 import assemble.eolmangyo.fruit.infrastructure.entity.MarketFruitEntity;
+import assemble.eolmangyo.fruit.infrastructure.jpa.AveragePriceAndQualityJpaRepository;
 import assemble.eolmangyo.fruit.infrastructure.jpa.MarketFruitJpaRepository;
 import assemble.eolmangyo.fruit.infrastructure.jpa.SeasonFruitJpaRepository;
 import assemble.eolmangyo.global.common.exception.BaseException;
@@ -19,16 +22,19 @@ import assemble.eolmangyo.user.infrastructure.entity.UserEntity;
 import assemble.eolmangyo.user.infrastructure.jpa.ReviewJpaRepository;
 import assemble.eolmangyo.user.infrastructure.jpa.StampJpaRepository;
 import assemble.eolmangyo.user.infrastructure.jpa.UserJpaRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class RegisterReviewFacade {
 
@@ -46,6 +52,7 @@ public class RegisterReviewFacade {
 	private final StampJpaRepository stampJpaRepository;
 	private final SeasonFruitJpaRepository seasonFruitJpaRepository;
 	private final MarketFruitQueryDsl marketFruitQueryDsl;
+	private final AveragePriceAndQualityJpaRepository averagePriceAndQualityJpaRepository;
 
 
 	/**
@@ -53,6 +60,7 @@ public class RegisterReviewFacade {
 	 * 1. 리뷰 등록
 	 * 2. 리뷰 저장
 	 * 3. 스탬프 저장
+	 * 4. 평균 가격과 평균 품질 업데이트
 	 */
 
 	// 1. 리뷰 등록
@@ -69,6 +77,7 @@ public class RegisterReviewFacade {
 			.marketFruit(marketFruit)
 			.quality(requestDto.getQuality())
 			.purchaseQuantity(requestDto.getPurchaseQuantity())
+			.purchasePrice(requestDto.getPurchasePrice())
 			.fruitImageUrl(requestDto.getFruitImageUrl())
 			.reviewContent(requestDto.getReviewContent())
 			.build();
@@ -91,9 +100,37 @@ public class RegisterReviewFacade {
 				.isReceived(true)
 			.build();
 		stampJpaRepository.save(stamp);
-
 		// 과일 스탬프인지 확인
 		Boolean isFruitStamp = stamp.getMarketFruit() != null;
+
+		// 평균 가격 계산
+		FruitCountType countType = marketFruit.getFruit().getFruitCountType();
+		Integer averagePrice;
+		if (countType == FruitCountType.COUNT) {
+			averagePrice = requestDto.getPurchasePrice() / requestDto.getPurchaseQuantity();
+		} else {
+			averagePrice = requestDto.getPurchasePrice() / (requestDto.getPurchaseQuantity() / 100);
+		}
+		// 오늘의 평균 값들 업데이트
+		AveragePriceAndQualityEntity averagePriceAndQuality = averagePriceAndQualityJpaRepository.findByMarketFruitIdAndDate(marketFruit.getId(), LocalDate.now())
+			.orElseGet(() -> AveragePriceAndQualityEntity.builder()
+					.marketFruit(marketFruit)
+					.date(LocalDate.now())
+					.build());
+		Integer count = averagePriceAndQualityJpaRepository.countByDate(LocalDate.now());
+		// null이라면 0이라 생각하고 평균 가격을 계산
+		Integer updatedAveragePrice = averagePriceAndQuality.getAveragePrice() == null
+			? averagePrice
+			: (averagePriceAndQuality.getAveragePrice()*count + averagePrice ) / (count +1);
+		// null이라면 0이라 생각하고 평균 품질을 계산
+		Float updatedAverageQuality = averagePriceAndQuality.getAverageQuality() == null
+			? (float) requestDto.getQuality()
+			: (averagePriceAndQuality.getAverageQuality()*count + requestDto.getQuality()) / (count +1);
+		updatedAverageQuality = (float) Math.round(updatedAverageQuality * 10) / 10.0f;
+		// 업데이트
+		averagePriceAndQuality.updateAveragePriceAndQuality(updatedAveragePrice, updatedAverageQuality);
+		averagePriceAndQualityJpaRepository.save(averagePriceAndQuality);
+
 		// 응답값 return
 		return new RegisterReviewOutDto(isFruitStamp);
 	}
