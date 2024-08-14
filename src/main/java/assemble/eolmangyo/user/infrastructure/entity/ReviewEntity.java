@@ -31,6 +31,9 @@ public class ReviewEntity extends BaseTimeEntity {
 	@Column(name = "purchase_quantity", nullable = false)
 	private Integer purchaseQuantity;
 
+	@Column(name = "purchase_price", nullable = false)
+	private Integer purchasePrice;
+
 	@Column(name = "quality", nullable = false, columnDefinition = "TINYINT")
 	private Integer quality;
 
