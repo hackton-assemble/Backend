@@ -7,6 +7,8 @@ import assemble.eolmangyo.user.domain.Review;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 
 @Entity
 @Getter
@@ -42,6 +44,9 @@ public class ReviewEntity extends BaseTimeEntity {
 
 	@Column(name = "review_content", nullable = false, length = 255)
 	private String reviewContent;
+
+	@Column(name = "review_date", nullable = false)
+	private LocalDate reviewDate;
 
 	/**
 	 * ReviewEntity
