@@ -3,6 +3,7 @@ package assemble.eolmangyo.fruit.infrastructure.entity;
 
 import assemble.eolmangyo.fruit.domain.Fruit;
 import assemble.eolmangyo.fruit.domain.enums.FruitCountType;
+import assemble.eolmangyo.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "fruit")
-public class FruitEntity {
+public class FruitEntity extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

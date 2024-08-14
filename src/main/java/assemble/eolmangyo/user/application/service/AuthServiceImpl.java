@@ -61,11 +61,13 @@ public class AuthServiceImpl {
 		return new SignUpOutDto(accessToken, users.getUserUuid(), users.getUserNickname());
 	}
 
+
 	// 2. 로그인 아이디 중복 확인
 	public LoginIdDuplicateCheckOutDto loginIdDuplicateCheck(String loginId) {
 		boolean isDuplicated = userRepository.existsByLoginId(loginId);
 		return new LoginIdDuplicateCheckOutDto(isDuplicated);
 	}
+
 
 	// 3. 로그인
 	public SignInOutDto signIn(String loginId, String loginPassword) {

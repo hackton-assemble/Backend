@@ -91,7 +91,7 @@ public enum BaseResponseStatus {
 	NO_EXIST_NOTIFICATION(HttpStatus.NOT_FOUND, false, 5003, "존재하지 않는 알림입니다."),
 	CANNOT_SHARE(HttpStatus.BAD_REQUEST, false, 5004, "공유할 수 없는 유저입니다."),
 
-	;
+	NO_EXIST_MARKET_FRUIT(HttpStatus.NOT_FOUND, false, 10001, "존재하지 않는 시장과일입니다.");
 
 	private final HttpStatusCode httpStatusCode;
 	private final boolean isSuccess;

@@ -1,6 +1,7 @@
 package assemble.eolmangyo.market.infrastructure.entity;
 
 
+import assemble.eolmangyo.global.common.entity.BaseTimeEntity;
 import assemble.eolmangyo.market.domain.Store;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,8 +12,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "market")
-public class StoreEntity {
+@Table(name = "store")
+public class StoreEntity extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

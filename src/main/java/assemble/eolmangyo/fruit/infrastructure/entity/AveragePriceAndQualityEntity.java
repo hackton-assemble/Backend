@@ -2,6 +2,7 @@ package assemble.eolmangyo.fruit.infrastructure.entity;
 
 
 import assemble.eolmangyo.fruit.domain.AveragePriceAndQuality;
+import assemble.eolmangyo.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "average_price_and_quality")
-public class AveragePriceAndQualityEntity {
+public class AveragePriceAndQualityEntity extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
