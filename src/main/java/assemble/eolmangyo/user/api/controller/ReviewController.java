@@ -6,7 +6,6 @@ import assemble.eolmangyo.global.common.response.BaseResponse;
 import assemble.eolmangyo.user.api.facade.RegisterReviewFacade;
 import assemble.eolmangyo.user.api.request.RegisterReviewRequestDto;
 import assemble.eolmangyo.user.api.response.RegisterReviewResponseDto;
-import assemble.eolmangyo.user.application.service.ReviewServiceImpl;
 import assemble.eolmangyo.user.domain.dto.RegisterReviewOutDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -37,7 +36,7 @@ public class ReviewController {
 	 */
 
 	// 1. 리뷰 등록
-	@PostMapping("/register")
+	@PostMapping("")
 	@Operation(summary = "리뷰 등록", description = "리뷰를 등록하고 스탬프 정보를 받는다", tags = { "Review" })
 	@SecurityRequirement(name = "Bearer Auth")
 	public BaseResponse<RegisterReviewResponseDto> registerReview(
